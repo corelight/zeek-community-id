@@ -1,0 +1,5 @@
+[package]
+description="Community ID" flow hash support in the connection log.
+script_dir = scripts/Corelight/CommunityID
+build_command = ./configure --bro-dist=%(bro_dist)s && make
+test_command = cd tests && btest -d community-id
