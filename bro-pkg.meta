@@ -1,5 +1,6 @@
 [package]
-description="Community ID" flow hash support in the connection log.
+description="Community ID" flow hash support in conn.log
 script_dir = scripts/Corelight/CommunityID
 build_command = ./configure --bro-dist=%(bro_dist)s && make
 test_command = cd tests && btest -d community-id
+tags = bro plugin, conn, logging, community id, flow hashing, flow id, sha1, corelight
