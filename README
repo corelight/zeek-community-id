@@ -4,7 +4,7 @@ This Bro package provides support for "community ID" flow hashing, a
 standardized way of labeling traffic flows in network monitors. When
 loaded, the package adds a `community_id` string field to
 conn.log. This is work in progress between the Bro and Suricata
-communities, to enable correation of flows in the outputs of both
+communities, to enable correlation of flows in the outputs of both
 tools. Feedback is very welcome, also from users/developers of other
 monitoring software.
 
@@ -34,7 +34,7 @@ such flows Bro never triggers the connection-related events used by
 the package, so there won't be output in conn.log anyway. (If there
 were protocols Bro tracks at the flow level but the plugin doesn't
 support, the reported ID would be empty.)  We currently support TCP
-and UDP over IPv4 or IPv4, as well as ICMPv4 and ICMPv6. We do _not_
+and UDP over IPv4 or IPv6, as well as ICMPv4 and ICMPv6. We do _not_
 support other transport-level protocols (such as SCTP), or general
 IP-address-pair flows for unsupported transport layer protocols.
 
