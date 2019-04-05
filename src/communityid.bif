@@ -7,10 +7,51 @@ module CommunityID;
 // For access to the one-way flow determination logic
 #include "analyzer/protocol/icmp/ICMP.h"
 
-// Wrapper around sha1_update() that optionally also prints the hashed
+// Two implementations of digest code, one for the codebase up to
+// ~2.6.1, one later. We need a better way to deal with such changes.
+#ifdef BRO_HAS_OLD_DIGEST_CODE
+
+struct Ctx {
+    SHA_CTX ctx;
+};
+
+static void digest_init(Ctx* ctx) {
+    sha1_init(&ctx->ctx);
+}
+
+static void digest_update(Ctx* ctx, const void* data, unsigned long len) {
+    sha1_update(&ctx->ctx, data, len);
+}
+
+static void digest_final(Ctx* ctx, u_char* md) {
+    sha1_final(&ctx->ctx, md);
+}
+
+#else
+
+struct Ctx {
+       EVP_MD_CTX *ctx;
+};
+
+static void digest_init(Ctx* ctx) {
+    ctx->ctx = hash_init(Hash_SHA1);
+}
+
+static void digest_update(Ctx* ctx, const void* data, unsigned long len) {
+    hash_update(ctx->ctx, data, len);
+}
+
+static void digest_final(Ctx* ctx, u_char* md) {
+    hash_final(ctx->ctx, md);
+    ctx->ctx = 0;
+}
+
+#endif
+
+// Wrapper around the digest updater that optionally also prints the hashed
 // data, and returns the number of bytes provided.
-static int sha1_update_logger(SHA_CTX* ctx, const void* data,
-                               unsigned long len, bool verbose=false) {
+static int digest_update_logger(Ctx* ctx, const void* data,
+                                unsigned long len, bool verbose=false) {
     if (verbose) {
         for (unsigned long i = 0; i < len; i++) {
             const char *sep = i < len-1 ? ":" : "";
@@ -20,10 +61,11 @@ static int sha1_update_logger(SHA_CTX* ctx, const void* data,
         printf(" ");
     }
 
-    sha1_update(ctx, data, len);
+    digest_update(ctx, data, len);
 
     return len;
 }
+
 %%}
 
 function hash_conn%(conn: connection%): string
@@ -123,21 +165,21 @@ function hash_conn%(conn: connection%): string
         std::swap(hash_src_port, hash_dst_port);
     }
 
-    SHA_CTX ctx;
+    Ctx ctx;
     u_char digest[SHA_DIGEST_LENGTH];
     int dlen = 0;
 
-    sha1_init(&ctx);
+    digest_init(&ctx);
 
-    dlen += sha1_update_logger(&ctx, &hash_seed, 2, verbose);
-    dlen += sha1_update_logger(&ctx, hash_src_addr, is_ipv4 ? 4 : 16, verbose);
-    dlen += sha1_update_logger(&ctx, hash_dst_addr, is_ipv4 ? 4 : 16, verbose);
-    dlen += sha1_update_logger(&ctx, &hash_proto, 1, verbose);
-    dlen += sha1_update_logger(&ctx, &hash_padbyte, 1, verbose);
-    dlen += sha1_update_logger(&ctx, &hash_src_port, 2, verbose);
-    dlen += sha1_update_logger(&ctx, &hash_dst_port, 2, verbose);
+    dlen += digest_update_logger(&ctx, &hash_seed, 2, verbose);
+    dlen += digest_update_logger(&ctx, hash_src_addr, is_ipv4 ? 4 : 16, verbose);
+    dlen += digest_update_logger(&ctx, hash_dst_addr, is_ipv4 ? 4 : 16, verbose);
+    dlen += digest_update_logger(&ctx, &hash_proto, 1, verbose);
+    dlen += digest_update_logger(&ctx, &hash_padbyte, 1, verbose);
+    dlen += digest_update_logger(&ctx, &hash_src_port, 2, verbose);
+    dlen += digest_update_logger(&ctx, &hash_dst_port, 2, verbose);
 
-    sha1_final(&ctx, digest);
+    digest_final(&ctx, digest);
 
     // We currently have no real versioning/hash configuration logic,
     // so we simply prefix "1:" to the hash.
