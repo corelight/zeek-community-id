@@ -193,7 +193,11 @@ function hash_conn%(conn: connection%): string
         Base64Converter enc(conn);
         enc.Encode(SHA_DIGEST_LENGTH, digest, &outlen, &outbuf);
         res = new StringVal(ver + string(outbuf, outlen));
+        // When given outlen = 0, the Encode() method creates the
+        // buffer it returns as outbuf, so we must delete it.
+        delete[] outbuf;
     } else {
+        // The following returns a static buffer; no need to delete.
         const char *ascii_digest = sha1_digest_print(digest);
         res = new StringVal(ver + ascii_digest);
     }
