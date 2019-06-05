@@ -1,15 +1,15 @@
-# "Community ID" flow hashing for Bro
+# "Community ID" flow hashing for Zeek
 
-This Bro package provides support for "community ID" flow hashing, a
+This Zeek package provides support for "community ID" flow hashing, a
 standardized way of labeling traffic flows in network monitors. When
 loaded, the package adds a `community_id` string field to
-conn.log. This is work in progress between the Bro and Suricata
+conn.log. This is work in progress between the Zeek and Suricata
 communities, to enable correlation of flows in the outputs of both
 tools. Feedback is very welcome, also from users/developers of other
 monitoring software.
 
 This package implements a BiF to implement the hashing logic and thus
-needs binary compilation, so it's also a Bro plugin. Here's an example
+needs binary compilation, so it's also a Zeek plugin. Here's an example
 of a resulting conn.log:
 
 ```
@@ -28,11 +28,11 @@ of a resulting conn.log:
 ## Protocol support
 
 The Community ID spec currently envisions support for a number of
-protocol constellations for which Bro does not track flow-level state
+protocol constellations for which Zeek does not track flow-level state
 because its analyzers wouldn't know what to do with the traffic. For
-such flows Bro never triggers the connection-related events used by
+such flows Zeek never triggers the connection-related events used by
 the package, so there won't be output in conn.log anyway. (If there
-were protocols Bro tracks at the flow level but the plugin doesn't
+were protocols Zeek tracks at the flow level but the plugin doesn't
 support, the reported ID would be empty.)  We currently support TCP
 and UDP over IPv4 or IPv6, as well as ICMPv4 and ICMPv6. We do _not_
 support other transport-level protocols (such as SCTP), or general
@@ -42,14 +42,14 @@ IP-address-pair flows for unsupported transport layer protocols.
 
 The package's name is `bro-community-id`; the plugin's name is
 `Corelight::CommunityID`. You can see the package's configuration
-options in the corresponding [Bro policy](scripts/Corelight/CommunityID/__load__.bro).
+options in the corresponding [Zeek policy](scripts/Corelight/CommunityID/__load__.bro).
 
 ## Testing
 
 The package includes btests that verify plugin loading and crunch
-included test pcaps through Bro to check baselined Bro console output.
+included test pcaps through Zeek to check baselined Zeek console output.
 
 ## Contact
 
-For questions and feedback, please get in touch on the Bro mailing
+For questions and feedback, please get in touch on the Zeek mailing
 list, or contact Christian Kreibich (christian@corelight.com).

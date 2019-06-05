@@ -29,7 +29,7 @@ cat 1>&2 <<EOF
 Usage: $0 [OPTIONS]
 
   Plugin Options:
-    --bro-dist=DIR             Path to Bro source tree
+    --bro-dist=DIR             Path to Zeek source tree
     --install-root=DIR         Path where to install plugin into
     --with-binpac=DIR          Path to BinPAC installation root
     --with-broker=DIR          Path to Broker installation root
@@ -147,7 +147,7 @@ if [ -z "$brodist" ]; then
             brodist=`bro-config --bro_dist 2> /dev/null`
 
             if [ ! -e "$brodist/bro-path-dev.in" ]; then
-                echo "$brodist does not appear to be a valid Bro source tree."
+                echo "$brodist does not appear to be a valid Zeek source tree."
                 exit 1
             fi
 
@@ -160,7 +160,7 @@ if [ -z "$brodist" ]; then
     fi
 else
     if [ ! -e "$brodist/bro-path-dev.in" ]; then
-      echo "$brodist does not appear to be a valid Bro source tree."
+      echo "$brodist does not appear to be a valid Zeek source tree."
       exit 1
     fi
 
@@ -178,7 +178,7 @@ if type plugin_addl >/dev/null 2>&1; then
 fi
 
 echo "Build Directory        : $builddir"
-echo "Bro Source Directory   : $brodist"
+echo "Zeek Source Directory  : $brodist"
 
 mkdir -p $builddir
 cd $builddir
