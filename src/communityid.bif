@@ -117,7 +117,11 @@ function hash_conn%(conn: connection%): string
             hash_proto = IPPROTO_UDP;
             break;
         case TRANSPORT_ICMP:
-            hash_proto = is_ipv4 ? IPPROTO_ICMP : IPPROTO_ICMPV6;
+            if (is_ipv4)
+                hash_proto = IPPROTO_ICMP;
+            else
+                hash_proto = IPPROTO_ICMPV6;
+
             break;
         case TRANSPORT_UNKNOWN:
             builtin_error("CommunityID: unknown transport layer", conn);
