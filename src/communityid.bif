@@ -1,6 +1,8 @@
 module CommunityID;
 
 %%{
+#include <cstdint>
+
 #include "digest.h"
 #include "Base64.h"
 
@@ -92,13 +94,13 @@ function hash_conn%(conn: connection%): string
     }
 
     // The connection properties, ordered as we hash them:
-    uint16 hash_seed = 0;
-    const uint32 *hash_src_addr = 0;
-    const uint32 *hash_dst_addr = 0;
-    uint8 hash_proto = 0;
-    uint8 hash_padbyte = 0;
-    uint16 hash_src_port = 0;
-    uint16 hash_dst_port = 0;
+    uint16_t hash_seed = 0;
+    const uint32_t *hash_src_addr = 0;
+    const uint32_t *hash_dst_addr = 0;
+    uint8_t hash_proto = 0;
+    uint8_t hash_padbyte = 0;
+    uint16_t hash_src_port = 0;
+    uint16_t hash_dst_port = 0;
 
     hash_seed = htons(comm_id_seed);
     bool is_ipv4 = conn->OrigAddr().GetBytes(&hash_src_addr) == 1;
@@ -115,7 +117,11 @@ function hash_conn%(conn: connection%): string
             hash_proto = IPPROTO_UDP;
             break;
         case TRANSPORT_ICMP:
-            hash_proto = is_ipv4 ? IPPROTO_ICMP : IPPROTO_ICMPV6;
+            if (is_ipv4)
+                hash_proto = IPPROTO_ICMP;
+            else
+                hash_proto = IPPROTO_ICMPV6;
+
             break;
         case TRANSPORT_UNKNOWN:
             builtin_error("CommunityID: unknown transport layer", conn);
@@ -125,8 +131,8 @@ function hash_conn%(conn: connection%): string
             return new StringVal("");
     }
 
-    hash_src_port = (uint16) conn->OrigPort(); // Already in NBO
-    hash_dst_port = (uint16) conn->RespPort();
+    hash_src_port = (uint16_t) conn->OrigPort(); // Already in NBO
+    hash_dst_port = (uint16_t) conn->RespPort();
 
     // Some trickiness. The community flow hash value needs to be the
     // same regardless of the directionality of the flow, to the
