@@ -1,15 +1,15 @@
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
 
-project(BroPluginCommunityID)
+project(ZeekPluginCommunityID)
 
-include(BroPlugin)
+include(ZeekPlugin)
 
-bro_plugin_begin(Corelight CommunityID)
-bro_plugin_cc(src/Plugin.cc)
-bro_plugin_bif(src/communityid.bif)
-bro_plugin_dist_files(README CHANGES COPYING VERSION)
-bro_plugin_end()
+zeek_plugin_begin(Corelight CommunityID)
+zeek_plugin_cc(src/Plugin.cc)
+zeek_plugin_bif(src/communityid.bif)
+zeek_plugin_dist_files(README COPYING VERSION)
+zeek_plugin_end()
 
 file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/VERSION" VERSION LIMIT_COUNT 1)
 

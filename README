@@ -40,16 +40,22 @@ IP-address-pair flows for unsupported transport layer protocols.
 
 ## Using the package
 
-The package's name is `bro-community-id`; the plugin's name is
+The package's name is `zeek-community-id`; the plugin's name is
 `Corelight::CommunityID`. You can see the package's configuration
-options in the corresponding [Zeek policy](scripts/Corelight/CommunityID/__load__.bro).
+options in the corresponding [Zeek policy](scripts/Corelight/CommunityID/__load__.zeek).
+
+The package's master branch supports Zeek 3.0 and newer. For older
+versions, take a look at the zeek/X.Y branches. Specifically, the
+zeek/3.0 branch will work with late 2.x releases, as well as 3.0.
 
 ## Testing
 
 The package includes btests that verify plugin loading and crunch
-included test pcaps through Zeek to check baselined Zeek console output.
+included test pcaps through Zeek to check baselined Zeek console
+output. You can run these by saying `btest -c btest.cfg` in the tests
+directory.
 
 ## Contact
 
 For questions and feedback, please get in touch on the Zeek mailing
-list, or contact Christian Kreibich (christian@corelight.com).
+list or contact Christian Kreibich (christian@corelight.com).

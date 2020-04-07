@@ -107,7 +107,7 @@ function hash_conn%(conn: connection%): string
     conn->RespAddr().GetBytes(&hash_dst_addr);
     TransportProto proto = conn->ConnTransport();
 
-    // Bro's transport protocol aliases different underlying
+    // Zeek's transport protocol aliases different underlying
     // protocols, particularly IPv4's and v6's ICMP...
     switch (proto) {
         case TRANSPORT_TCP:

@@ -1,4 +1,4 @@
-# Bro package & plugin for adding community hash IDs to conn.log.
+# Zeek package & plugin for adding community hash IDs to conn.log.
 # This is loaded when a user activates the plugin.
 #
 module CommunityID;
