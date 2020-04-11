@@ -5,4 +5,4 @@
 # your plugin's accompanying scripts
 #
 
-@load ./main.bro
+@load ./main
