@@ -5,6 +5,7 @@ module CommunityID;
 
 #include "digest.h"
 #include "Base64.h"
+#include "Scope.h"
 
 // For access to the one-way flow determination logic
 #include "analyzer/protocol/icmp/ICMP.h"
@@ -189,7 +190,7 @@ function hash_conn%(conn: connection%): string
 
     // We currently have no real versioning/hash configuration logic,
     // so we simply prefix "1:" to the hash.
-    string ver("1:");
+    std::string ver("1:");
     StringVal *res = 0;
 
     if (do_base64) {
@@ -198,7 +199,7 @@ function hash_conn%(conn: connection%): string
 
         Base64Converter enc(conn);
         enc.Encode(SHA_DIGEST_LENGTH, digest, &outlen, &outbuf);
-        res = new StringVal(ver + string(outbuf, outlen));
+        res = new StringVal(ver + std::string(outbuf, outlen));
         // When given outlen = 0, the Encode() method creates the
         // buffer it returns as outbuf, so we must delete it.
         delete[] outbuf;
