@@ -3,6 +3,10 @@ cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
 
 project(ZeekPluginCommunityID)
 
+include(MacDependencyPaths)
+find_package(OpenSSL REQUIRED)
+include_directories(BEFORE ${OPENSSL_INCLUDE_DIR})
+
 include(ZeekPlugin)
 
 zeek_plugin_begin(Corelight CommunityID)
