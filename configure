@@ -201,6 +201,10 @@ fi
 echo "Build Directory        : $builddir"
 echo "Zeek Source Directory  : $zeekdist"
 
+if type plugin_addl >/dev/null 2>&1; then
+    plugin_addl
+fi
+
 mkdir -p $builddir
 cd $builddir
 

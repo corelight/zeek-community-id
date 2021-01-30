@@ -44,7 +44,7 @@ The package's name is `zeek-community-id`; the plugin's name is
 `Corelight::CommunityID`. You can see the package's configuration
 options in the corresponding [Zeek policy](scripts/Corelight/CommunityID/__load__.zeek).
 
-The package's master branch supports Zeek 3.0 and newer. For older
+The package's master branch supports Zeek 3.2 and newer. For older
 versions, take a look at the zeek/X.Y branches. Specifically, the
 zeek/3.0 branch will work with late 2.x releases, as well as 3.0.
 

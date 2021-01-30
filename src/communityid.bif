@@ -3,53 +3,38 @@ module CommunityID;
 %%{
 #include <cstdint>
 
-#include "digest.h"
-#include "Base64.h"
-#include "Scope.h"
+#include <zeek/digest.h>
+#include <zeek/Base64.h>
+#include <zeek/Scope.h>
+#include <zeek/ZeekString.h>
 
 // For access to the one-way flow determination logic
-#include "analyzer/protocol/icmp/ICMP.h"
+#include <zeek/analyzer/protocol/icmp/ICMP.h>
 
-// Two implementations of digest code, one for the codebase up to
-// ~2.6.1, one later. We need a better way to deal with such changes.
-#ifdef BRO_HAS_OLD_DIGEST_CODE
-
-struct Ctx {
-    SHA_CTX ctx;
-};
-
-static void digest_init(Ctx* ctx) {
-    sha1_init(&ctx->ctx);
-}
-
-static void digest_update(Ctx* ctx, const void* data, unsigned long len) {
-    sha1_update(&ctx->ctx, data, len);
-}
-
-static void digest_final(Ctx* ctx, u_char* md) {
-    sha1_final(&ctx->ctx, md);
-}
-
+// Accommodate Zeek 3.2.x as well as Zeek 4+: the former still has the
+// digest code in the global namespace, the latter in zeek::detail.
+#ifdef ZEEK_HAS_NAMESPACED_DIGEST
+#define zeek_ns zeek::detail
 #else
+#define zeek_ns
+#endif
 
 struct Ctx {
-       EVP_MD_CTX *ctx;
+    EVP_MD_CTX *ctx;
 };
 
 static void digest_init(Ctx* ctx) {
-    ctx->ctx = hash_init(Hash_SHA1);
+    ctx->ctx = zeek_ns::hash_init(zeek_ns::Hash_SHA1);
 }
 
 static void digest_update(Ctx* ctx, const void* data, unsigned long len) {
-    hash_update(ctx->ctx, data, len);
+    zeek_ns::hash_update(ctx->ctx, data, len);
 }
 
 static void digest_final(Ctx* ctx, u_char* md) {
-    hash_final(ctx->ctx, md);
+    zeek_ns::hash_final(ctx->ctx, md);
     ctx->ctx = 0;
 }
-
-#endif
 
 // Wrapper around the digest updater that optionally also prints the hashed
 // data, and returns the number of bytes provided.
@@ -76,22 +61,22 @@ function hash_conn%(conn: connection%): string
     bro_uint_t comm_id_seed = 0;
     bool do_base64 = true;
     bool verbose = false;
-    ID *id = 0;
+    zeek::detail::IDPtr id;
 
-    if ( (id = global_scope()->Lookup("CommunityID::seed"))) {
-        comm_id_seed = id->ID_Val()->AsCount();
+    if ( (id = zeek::detail::global_scope()->Find("CommunityID::seed"))) {
+        comm_id_seed = id->GetVal()->AsCount();
     } else {
-        builtin_error("CommunityID: seed value not retrievable from policy layer");
+        emit_builtin_error("CommunityID: seed value not retrievable from policy layer");
     }
 
-    if ( (id = global_scope()->Lookup("CommunityID::do_base64"))) {
-        do_base64 = id->ID_Val()->AsBool();
+    if ( (id = zeek::detail::global_scope()->Find("CommunityID::do_base64"))) {
+        do_base64 = id->GetVal()->AsBool();
     } else {
-        builtin_error("CommunityID: base64 usage flag not retrievable from policy layer");
+        emit_builtin_error("CommunityID: base64 usage flag not retrievable from policy layer");
     }
 
-    if ( (id = global_scope()->Lookup("CommunityID::verbose"))) {
-        verbose = id->ID_Val()->AsBool();
+    if ( (id = zeek::detail::global_scope()->Find("CommunityID::verbose"))) {
+        verbose = id->GetVal()->AsBool();
     }
 
     // The connection properties, ordered as we hash them:
@@ -125,11 +110,11 @@ function hash_conn%(conn: connection%): string
 
             break;
         case TRANSPORT_UNKNOWN:
-            builtin_error("CommunityID: unknown transport layer", conn);
-            return new StringVal("");
+            emit_builtin_error("CommunityID: unknown transport layer", conn);
+            return zeek::make_intrusive<zeek::StringVal>("");
         default:
-            builtin_error("CommunityID: unhandled transport layer", conn);
-            return new StringVal("");
+            emit_builtin_error("CommunityID: unhandled transport layer", conn);
+            return zeek::make_intrusive<zeek::StringVal>("");
     }
 
     hash_src_port = (uint16_t) conn->OrigPort(); // Already in NBO
@@ -191,26 +176,26 @@ function hash_conn%(conn: connection%): string
     // We currently have no real versioning/hash configuration logic,
     // so we simply prefix "1:" to the hash.
     std::string ver("1:");
-    StringVal *res = 0;
+    zeek::String *res = 0;
 
     if (do_base64) {
         char *outbuf = 0;
         int outlen = 0;
 
-        Base64Converter enc(conn);
+        zeek_ns::Base64Converter enc(conn);
         enc.Encode(SHA_DIGEST_LENGTH, digest, &outlen, &outbuf);
-        res = new StringVal(ver + std::string(outbuf, outlen));
+        res = new zeek::String(ver + std::string(outbuf, outlen));
         // When given outlen = 0, the Encode() method creates the
         // buffer it returns as outbuf, so we must delete it.
         delete[] outbuf;
     } else {
         // The following returns a static buffer; no need to delete.
-        const char *ascii_digest = sha1_digest_print(digest);
-        res = new StringVal(ver + ascii_digest);
+        const char *ascii_digest = zeek_ns::sha1_digest_print(digest);
+        res = new zeek::String(ver + ascii_digest);
     }
 
     if (verbose)
         printf("(%d bytes) -> %s\n", dlen, res->Bytes());
 
-    return res;
+    return zeek::make_intrusive<zeek::StringVal>(res);
 %}

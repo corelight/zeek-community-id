@@ -25,29 +25,57 @@ plugin_option()
     esac
 }
 
-# Not a custom option, but we need a way to configure the plugin to
-# build with the old or new digest functions. --cpk
+# Community ID needs two bits of information for reasonably portable
+# builds: (1) whether the Zeek installation has "old" or "new" digest
+# functions, (2) whether the digest functions are in the zeek::detail
+# namespace. --cpk
 
-is_new_digest_code()
+find_digest_header()
 {
-    local path="$1"
-    grep -q HashAlgorithm "$path" 2>&1
+    paths="$1"
+
+    # Split on : and check each path for a digest.h, with or without
+    # additional zeek directory (4.1 no longer explicitly mentions
+    # that directory). For portability, loosely based on
+    # https://unix.stackexchange.com/a/64173
+    (
+	IFS=:
+	for dir in $paths; do
+            [ ! -d "$dir" ] && continue
+            if [ -f "$dir/digest.h" ]; then
+		echo "$dir/digest.h"
+		break
+            elif [ -f "$dir/zeek/digest.h" ]; then
+		echo "$dir/zeek/digest.h"
+		break
+            fi
+	done
+    )
+}
+
+is_in_detail_namespace()
+{
+    header="$1"
+    grep -q zeek::detail "$header" 2>&1
 }
 
 plugin_addl()
 {
-    local old_digest=true
+    is_namespaced=false
 
-    if [ -n "$brodist" ]; then
-        if is_new_digest_code "$brodist/src/digest.h"; then
-            old_digest=false
-        fi
-    elif type bro-config >/dev/null 2>&1 && bro-config --cmake_dir >/dev/null 2>&1; then
-        if is_new_digest_code "$(bro-config --include_dir)/digest.h"; then
-            old_digest=false
-        fi
+    if [ -n "$zeekdist" ] && [ -f "$zeekdist/src/digest.h" ]; then
+        header="$zeekdist/src/digest.h"
+    elif command -v zeek-config >/dev/null 2>&1; then
+        paths="$(zeek-config --include_dir)"
+        header="$(find_digest_header "$paths")"
     fi
 
-    append_cache_entry BRO_HAS_OLD_DIGEST_CODE BOOL $old_digest
-    echo "Old Digest Codebase    : $old_digest"
+    if [ -n "$header" ] && is_in_detail_namespace "$header"; then
+        is_namespaced=true
+    fi
+
+    append_cache_entry ZEEK_HAS_NAMESPACED_DIGEST BOOL $is_namespaced
+
+    echo "digest.h location      : $header"
+    echo "Namespaced functions   : $is_namespaced"
 }
