@@ -10,7 +10,7 @@ plugin::Configuration Plugin::Configure()
 	plugin::Configuration config;
 	config.name = "Corelight::CommunityID";
 	config.description = "\"Community ID\" flow hash support in the connection log";
-	config.version.major = 1;
-	config.version.minor = 1;
+	config.version.major = 3;
+	config.version.minor = 0;
 	return config;
 	}
