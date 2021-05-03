@@ -1,0 +1,19 @@
+name: Zeek nightly build
+
+on:
+  schedule:
+    - cron: '30 0 * * *'
+
+jobs:
+  test-nightly:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: zeek/action-zkg-install@v1
+        with:
+          pkg: ${{ github.server_url }}/${{ github.repository }}
+          zeek_version: 'zeek-nightly'
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: zkg-logs
+          path: ${{ github.workspace }}/.action-zkg-install/artifacts
