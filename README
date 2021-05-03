@@ -1,7 +1,7 @@
 # "Community ID" flow hashing for Zeek
 
-[![Zeek matrix tests](https://github.com/ckreibich/zeek-community-id/actions/workflows/zeek-matrix.yml/badge.svg)](https://github.com/ckreibich/zeek-community-id/actions/workflows/zeek-matrix.yml)
-[![Zeek nightly build](https://github.com/ckreibich/zeek-community-id/actions/workflows/zeek-nightly.yml/badge.svg)](https://github.com/ckreibich/zeek-community-id/actions/workflows/zeek-nightly.yml)
+[![Zeek matrix tests](https://github.com/corelight/zeek-community-id/actions/workflows/zeek-matrix.yml/badge.svg)](https://github.com/corelight/zeek-community-id/actions/workflows/zeek-matrix.yml)
+[![Zeek nightly build](https://github.com/corelight/zeek-community-id/actions/workflows/zeek-nightly.yml/badge.svg)](https://github.com/corelight/zeek-community-id/actions/workflows/zeek-nightly.yml)
 
 This Zeek package provides support for "community ID" flow hashing, a
 standardized way of labeling traffic flows in network monitors. When
