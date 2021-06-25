@@ -28,6 +28,22 @@ of a resulting conn.log:
 #close  2018-01-31-13-06-56
 ```
 
+## Zeek notice support
+
+The package supports Community ID in Zeek's `notice.log` for notices
+with a connection context. If you'd like to use this functionality,
+place the following line in your `local.zeek` or similar site-local
+configuration:
+
+```
+@load zeek-community-id/notice
+```
+
+This line has no effect when the Community ID package itself isn't
+loaded. This extra-script approach ensures that users who don't want
+the ID in their `notice.log` don't have that log cluttered with an
+additional column that's always unused.
+
 ## Protocol support
 
 The Community ID spec currently envisions support for a number of
@@ -59,7 +75,8 @@ On the `zeek/x.y` and master branches, git tags label the Community ID
 releases. For example, `3.1.0` is the first release on the `zeek/3.1`
 branch, and works with any Zeek in the 3.1 series. The next Community
 ID release for the Zeek 3.1 series will be called `3.1.1` and also
-live on this branch.
+live on this branch, followed by `3.1.2`, etc. (Therefore this isn't
+semantic versioning.)
 
 Each branch also declares a Zeek version compatibility window in
 `zkg.meta`, so won't install if paired with an incompatible Zeek
