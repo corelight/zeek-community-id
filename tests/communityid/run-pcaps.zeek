@@ -1,4 +1,4 @@
-# @TEST-EXEC: ln -s ../../scripts zeek-community-id
+# @TEST-EXEC: ln -s $PACKAGE zeek-community-id
 # @TEST-EXEC: for pcap in $(cd $TRACES && ls *.pcap); do zeek -r $TRACES/$pcap %INPUT >$pcap.out; done
 # @TEST-EXEC: for pcap in $(cd $TRACES && ls *.pcap); do btest-diff $pcap.out; done
 
