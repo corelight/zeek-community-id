@@ -1,10 +1,9 @@
+# @TEST-EXEC: ln -s ../../scripts zeek-community-id
 # @TEST-EXEC: for pcap in $(cd $TRACES && ls *.pcap); do bro -r $TRACES/$pcap %INPUT >$pcap.out; done
 # @TEST-EXEC: for pcap in $(cd $TRACES && ls *.pcap); do btest-diff $pcap.out; done
 
-# Loading the plugin in the following way seems to work both in the
-# local testing done by bro-pkg at installation time, and when running
-# later. --cpk
-@load Corelight/CommunityID
+# This mimicks the way zkg will later load the package.
+@load zeek-community-id
 
-# We need to enable verbose logging to get the baseline output.
+# We validate verbose logging in this test.
 redef CommunityID::verbose=T;
