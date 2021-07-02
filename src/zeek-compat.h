@@ -8,14 +8,19 @@
 // (available since Zeek 3.1) since it saves us from implementing
 // feature checks.
 
+// Namespacing tweaks
 #include <zeek/zeek-config.h>
-
 #if ZEEK_VERSION_NUMBER >= 30200 && ZEEK_VERSION_NUMBER < 40000
-
 #define ZEEK_DETAIL_NS
-
 #elif ZEEK_VERSION_NUMBER >= 40000
-
 #define ZEEK_DETAIL_NS zeek::detail
+#endif
 
+// In 4.1 the ICMP directionality code moved to packet-level analyzers.
+#if ZEEK_VERSION_NUMBER >= 40100
+#include <zeek/packet_analysis/protocol/icmp/ICMP.h>
+#define ZEEK_ANALYZER_ICMP ::zeek::packet_analysis::ICMP
+#else
+#include <zeek/analyzer/protocol/icmp/ICMP.h>
+#define ZEEK_ANALYZER_ICMP ::zeek::analyzer::icmp
 #endif

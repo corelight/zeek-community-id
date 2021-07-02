@@ -10,9 +10,6 @@ module CommunityID;
 #include <zeek/Scope.h>
 #include <zeek/ZeekString.h>
 
-// For access to the one-way flow determination logic
-#include <zeek/analyzer/protocol/icmp/ICMP.h>
-
 struct Ctx {
     EVP_MD_CTX *ctx;
 };
@@ -133,13 +130,13 @@ function hash_conn%(conn: connection%): string
 
     if (TRANSPORT_ICMP == proto) {
         if (is_ipv4)
-            analyzer::icmp::ICMP4_counterpart(ntohs(hash_src_port),
-                                              ntohs(hash_dst_port),
-                                              is_one_way);
+            ZEEK_ANALYZER_ICMP::ICMP4_counterpart(ntohs(hash_src_port),
+	                                          ntohs(hash_dst_port),
+                                                  is_one_way);
         else
-            analyzer::icmp::ICMP6_counterpart(ntohs(hash_src_port),
-                                              ntohs(hash_dst_port),
-                                              is_one_way);
+            ZEEK_ANALYZER_ICMP::ICMP6_counterpart(ntohs(hash_src_port),
+                                                  ntohs(hash_dst_port),
+                                                  is_one_way);
     }
 
     if (is_one_way || addr_port_canon_lt(conn->OrigAddr(), conn->OrigPort(),
