@@ -1,5 +1,8 @@
 # "Community ID" flow hashing for Zeek
 
+[![Zeek matrix tests](https://github.com/corelight/zeek-community-id/actions/workflows/zeek-matrix.yml/badge.svg)](https://github.com/corelight/zeek-community-id/actions/workflows/zeek-matrix.yml)
+[![Zeek nightly build](https://github.com/corelight/zeek-community-id/actions/workflows/zeek-nightly.yml/badge.svg)](https://github.com/corelight/zeek-community-id/actions/workflows/zeek-nightly.yml)
+
 This Zeek package provides support for "community ID" flow hashing, a
 standardized way of labeling traffic flows in network monitors. When
 loaded, the package adds a `community_id` string field to
@@ -42,11 +45,35 @@ IP-address-pair flows for unsupported transport layer protocols.
 
 The package's name is `zeek-community-id`; the plugin's name is
 `Corelight::CommunityID`. You can see the package's configuration
-options in the corresponding [Zeek policy](scripts/Corelight/CommunityID/__load__.zeek).
+options in the corresponding [Zeek script](scripts/Corelight/CommunityID/__load__.zeek).
 
-The package's master branch supports Zeek 3.0 and newer. For older
-versions, take a look at the zeek/X.Y branches. Specifically, the
-zeek/3.0 branch will work with late 2.x releases, as well as 3.0.
+## Compatibility with Zeek versions
+
+The Community ID package works with any Zeek version since 2.6.4.
+Since the Zeek codebase has undergone substantial changes since then,
+the package provides compatibility branches that support specific Zeek
+version ranges, striking a balance between readable code vs. ease of
+installation and branch management.
+
+On the `zeek/x.y` and master branches, git tags label the Community ID
+releases. For example, `3.1.0` is the first release on the `zeek/3.1`
+branch, and works with any Zeek in the 3.1 series. The next Community
+ID release for the Zeek 3.1 series will be called `3.1.1` and also
+live on this branch.
+
+Each branch also declares a Zeek version compatibility window in
+`zkg.meta`, so won't install if paired with an incompatible Zeek
+version. For example, the master branch currently requires at least
+Zeek 3.2.0, with no upper bound.
+
+Here's a summary of how Zeek versions, git tags, and git branches
+line up:
+
+Zeek version   | Git tag              | Git branch
+-------------- | -------------------- | ----------
+2.6.4 - 3.0.x  | 3.0.y                | zeek/3.0
+3.1.x          | 3.1.y                | zeek/3.1
+3.2.x - master | 3.2.y                | master
 
 ## Testing
 
@@ -57,5 +84,7 @@ directory.
 
 ## Contact
 
-For questions and feedback, please get in touch on the Zeek mailing
-list or contact Christian Kreibich (christian@corelight.com).
+For questions and feedback, please get in touch on
+[Zeek mailing list](https://lists.zeek.org/mailman3/lists/zeek.lists.zeek.org/)
+or the [Zeek Slack](https://app.slack.com/client/TSXGCHZE1/CTGDGK6EA).
+Github issues and PRs are welcome.
