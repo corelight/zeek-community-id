@@ -18,7 +18,7 @@ if [ -n "${bro_dist}" ]; then
     fi
 else
     # Use Bro installation for testing. In this case bro-config must be in PATH.
-    if ! which bro-config >/dev/null; then
+    if ! which bro-config >/dev/null 2>&1; then
         echo "bro-config not found" >&2
         exit 1
     fi
