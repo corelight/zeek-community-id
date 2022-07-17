@@ -8,7 +8,7 @@ jobs:
   test-nightly:
     runs-on: ubuntu-20.04
     steps:
-      - uses: zeek/action-zkg-install@v1.1
+      - uses: zeek/action-zkg-install@v1.2
         with:
           pkg: ${{ github.server_url }}/${{ github.repository }}
           zeek_version: 'zeek-nightly'
