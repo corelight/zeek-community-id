@@ -2,22 +2,23 @@ name: Zeek matrix tests
 
 on:
   push:
+    branches: [master]
   pull_request:
 
 jobs:
   test:
     name: test-${{ matrix.zeekver }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         zeekver: [zeek, zeek-lts, zeek-nightly]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: zeek/action-zkg-install@v1.2
         with:
           zeek_version: ${{ matrix.zeekver }}
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: failure()
         with:
           name: zkg-logs-${{ matrix.zeekver }}
