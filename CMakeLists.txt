@@ -1,7 +1,19 @@
-
-cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
 
 project(ZeekPluginCommunityID)
+
+# Establish version numbers in config.h
+file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/VERSION" VERSION LIMIT_COUNT 1)
+
+string(REGEX REPLACE "[.-]" " " version_numbers ${VERSION})
+separate_arguments(version_numbers)
+list(GET version_numbers 0 VERSION_MAJOR)
+list(GET version_numbers 1 VERSION_MINOR)
+list(GET version_numbers 2 VERSION_PATCH)
+add_compile_definitions(
+    VERSION_MAJOR=${VERSION_MAJOR}
+    VERSION_MINOR=${VERSION_MINOR}
+    VERSION_PATCH=${VERSION_PATCH})
 
 include(MacDependencyPaths)
 find_package(OpenSSL REQUIRED)
