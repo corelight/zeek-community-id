@@ -49,7 +49,7 @@ static int digest_update_logger(Ctx* ctx, const void* data,
 
 function hash_conn%(conn: connection%): string
 %{
-    bro_uint_t comm_id_seed = 0;
+    zeek_uint_t comm_id_seed = 0;
     bool do_base64 = true;
     bool verbose = false;
     zeek::detail::IDPtr id;
