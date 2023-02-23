@@ -15,7 +15,7 @@ jobs:
         zeekver: [zeek, zeek-lts, zeek-nightly]
     steps:
       - uses: actions/checkout@v3
-      - uses: zeek/action-zkg-install@v1.2
+      - uses: zeek/action-zkg-install@v2
         with:
           zeek_version: ${{ matrix.zeekver }}
       - uses: actions/upload-artifact@v3
