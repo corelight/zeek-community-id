@@ -8,7 +8,11 @@
 // (available since Zeek 3.1) since it saves us from implementing
 // feature checks.
 
+#if __has_include(<zeek/zeek-version.h>)
+#include <zeek/zeek-version.h>
+#else
 #include <zeek/zeek-config.h>
+#endif
 
 // bro_uint_t vs zeek_uint_t: we have the latter as of 5.1, and lose the former
 // in 6.1.
