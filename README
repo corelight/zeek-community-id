@@ -3,13 +3,17 @@
 [![Zeek matrix tests](https://github.com/corelight/zeek-community-id/actions/workflows/zeek-matrix.yml/badge.svg)](https://github.com/corelight/zeek-community-id/actions/workflows/zeek-matrix.yml)
 [![Zeek nightly build](https://github.com/corelight/zeek-community-id/actions/workflows/zeek-nightly.yml/badge.svg)](https://github.com/corelight/zeek-community-id/actions/workflows/zeek-nightly.yml)
 
-This Zeek package provides support for "community ID" flow hashing, a
-standardized way of labeling traffic flows in network monitors. When
-loaded, the package adds a `community_id` string field to
-conn.log. This is work in progress between the Zeek and Suricata
-communities, to enable correlation of flows in the outputs of both
-tools. Feedback is very welcome, also from users/developers of other
-monitoring software.
+This Zeek package provides support for [Community ID](https://github.com/corelight/community-id-spec)
+flow hashing, a standardized way of labeling traffic flows in network
+monitors. When loaded, the package adds a `community_id` string field to
+conn.log.
+
+> **Note**
+>
+> Zeek 6 and later versions include Community ID support.
+> You no longer need this package when using those Zeek versions.
+> Please refer to [the documentation](https://docs.zeek.org/en/master/customizations.html#community-id)
+> for details.
 
 This package implements a BiF to implement the hashing logic and thus
 needs binary compilation, so it's also a Zeek plugin. Here's an example
